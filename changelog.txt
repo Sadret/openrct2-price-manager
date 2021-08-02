@@ -1,0 +1,15 @@
+1.0.0 (2021-08-02)
+------------------------------------------------------------------------
+- Feature: Automatic daily updates
+- Feature: Manage ride prices
+  - Feature: Make transport rides free
+  - Feature: 'Good Value' pricing
+  - Feature: Lazy tax
+  - Feature: Allow unbound prices
+- Feature: Manage shop prices
+  - Feature: Overcharge for umbrellas
+- Feature: Manage toilet prices
+- Feature: Manage park fees
+  - Feature: Bound park fee by initial guest cash
+- Feature: RCT1: Charge for rides, park entry or both
+- Feature: Make all rides free

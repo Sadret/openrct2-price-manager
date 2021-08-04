@@ -117,30 +117,21 @@ function calculateRidePrice(ride: Ride): number {
     if (Config.freeTransportRidesEnabled.get() && [5, 6, 18, 43, 63].indexOf(ride.type) !== -1)
         return 0;
 
-    // See /src/openrct2/peep/Guest.cpp for logic.
-    // if (peep_flags & PEEP_FLAGS_HAS_PAID_FOR_PARK_ENTRY) value /= 4;
-    const value = park.entranceFee > 0 && !park.getFlag("freeParkEntry")
-        ? Math.floor(ride.value / 4)
-        : ride.value;
+    // Guests only pay a quarter if they had to pay for park entry
+    const value = ride.value >> (park.entranceFee > 0 && !park.getFlag("freeParkEntry") ? 2 : 0);
 
-    // See /src/openrct2/peep/Guest.cpp for logic.
-    // if (ridePrice > value * 2) ChoseNotToGoOnRide
-    // if (ridePrice <= value / 2) InsertNewThought(PEEP_THOUGHT_TYPE_GOOD_VALUE)
-    let priceInDimes = Config.goodValueEnabled.get()
-        ? Math.floor(value / 2)
-        : value * 2;
+    // Guests will pay at most double the value
+    // If it is less than half, they think it is good value
+    let price = Config.goodValueEnabled.get() ? value >> 1 : value << 1;
 
-    if (Config.lazyTaxEnabled.get()) {
-        priceInDimes *= (1 - Config.lazyTaxFactor.get() / 100);
-        priceInDimes = Math.floor(priceInDimes);
-    }
+    if (Config.lazyTaxEnabled.get())
+        price = Math.floor(price * (1 - Config.lazyTaxFactor.get() / 100));
 
-    if (!Config.unboundPriceEnabled.get()) {
-        // Max price is $20 via the UI.
-        priceInDimes = Math.min(priceInDimes, 200);
-    }
+    // Cap at 200¤ which is the maximum that the ui allows
+    if (!Config.unboundPriceEnabled.get())
+        price = Math.min(price, 200);
 
-    return priceInDimes;
+    return price;
 }
 
 function getMaximumParkEntranceFee(): number {

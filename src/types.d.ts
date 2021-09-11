@@ -49,3 +49,38 @@ interface Config {
     // rct1 charge policy
     rct1ChargePolicy: Property<ChargePolicyOption>;
 }
+
+interface PriceManagerSetValueActionArgs {
+    type: "setValue";
+    key: keyof Config;
+    value: any;
+}
+
+interface PriceManagerGetValueActionArgs {
+    type: "getValue";
+    key: keyof Config;
+}
+
+interface PriceManagerGetConfigActionArgs {
+    type: "getConfig";
+}
+
+interface PriceManagerBroadcastValueActionArgs {
+    type: "broadcastValue";
+    key: keyof Config;
+    value: any;
+}
+
+interface PriceManagerBroadcastConfigActionArgs {
+    type: "broadcastConfig";
+    config: {
+        [Property in keyof Config]: any;
+    };
+}
+
+type PriceManagerActionArgs =
+    PriceManagerSetValueActionArgs |
+    PriceManagerGetValueActionArgs |
+    PriceManagerGetConfigActionArgs |
+    PriceManagerBroadcastValueActionArgs |
+    PriceManagerBroadcastConfigActionArgs;

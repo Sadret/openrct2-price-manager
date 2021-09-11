@@ -11,6 +11,7 @@
 import ConfigWindow from "./ConfigWindow";
 import Configuration from "./Configuration";
 import PriceManager from "./PriceManager";
+import Server from "./Server";
 
 registerPlugin({
     name: "price-manager",
@@ -35,5 +36,7 @@ registerPlugin({
 
         if (config.automaticPriceManagementEnabled.getValue())
             priceManager.updatePrices();
+
+        new Server(config);
     },
 });

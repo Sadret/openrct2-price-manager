@@ -6,28 +6,34 @@
  *****************************************************************************/
 
 /// <reference path="../../openrct2.d.ts" />
+/// <reference path="types.d.ts" />
 
-import Config from "./Config";
+import ConfigWindow from "./ConfigWindow";
+import Configuration from "./Configuration";
 import PriceManager from "./PriceManager";
-import Window from "./Window";
 
 registerPlugin({
     name: "price-manager",
     version: "1.0.0",
     authors: ["Sadret"],
-    type: "local",
+    type: "remote",
     licence: "GPL-3.0",
     minApiVersion: 30,
     main: () => {
-        if (typeof ui !== "undefined")
-            ui.registerMenuItem("Price Manager", Window.show);
+        const config = Configuration.getLocalConfig();
+        const priceManager = new PriceManager(config);
+
+        if (typeof ui !== "undefined") {
+            const configWindow = new ConfigWindow(config, priceManager);
+            ui.registerMenuItem("Price Manager", () => configWindow.show());
+        }
 
         context.subscribe("interval.day", () => {
-            if (Config.automaticPriceManagementEnabled.get())
-                PriceManager.updatePrices();
+            if (config.automaticPriceManagementEnabled.getValue())
+                priceManager.updatePrices();
         });
 
-        if (Config.automaticPriceManagementEnabled.get())
-            PriceManager.updatePrices();
+        if (config.automaticPriceManagementEnabled.getValue())
+            priceManager.updatePrices();
     },
 });

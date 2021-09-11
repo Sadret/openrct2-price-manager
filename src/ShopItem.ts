@@ -5,10 +5,6 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
-import Config from "./Config";
-
-export default { getItemPrice };
-
 // base value, hot value, cold value
 const items = [
     [14, 14, 14,], // Balloon
@@ -68,10 +64,10 @@ const items = [
 ];
 items[255] = items[3]; // ride photo
 
-function getItemPrice(item: number) {
+function getItemPrice(item: number, config: Config) {
     // umbrellas
     if (item === 4) {
-        switch (Config.overchargeUmbrellasPolicy.get()) {
+        switch (config.overchargeUmbrellasPolicy.getValue()) {
             case "when it rains":
                 if (!isRaining())
                     break;
@@ -98,3 +94,5 @@ function isRaining(): boolean {
             return false;
     }
 }
+
+export default { getItemPrice };

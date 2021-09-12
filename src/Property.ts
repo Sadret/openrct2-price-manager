@@ -5,15 +5,18 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
-export default class Property<T>{
-    private readonly persistence: Persistence;
-    readonly name: string;
+export default class Property<T> implements Observable<T>{
+    readonly persistence: Persistence;
+    readonly name: keyof Config;
     private value: T;
     readonly text: string;
     readonly tooltip: string;
+
+    private readonly observers: Observer<T>[] = [];
+
     constructor(
         persistence: Persistence,
-        name: string,
+        name: keyof Config,
         defaultValue: T,
         text: string,
         tooltip: string,
@@ -24,11 +27,21 @@ export default class Property<T>{
         this.text = text;
         this.tooltip = tooltip;
     }
+
     getValue(): T {
         return this.value;
     }
+
     setValue(value: T): void {
+        if (this.value === value)
+            return;
+
         this.value = value;
         this.persistence.set(this.name, value);
+        this.observers.forEach(observer => observer(value));
+    }
+
+    observeValue(observer: Observer<T>): void {
+        this.observers.push(observer);
     }
 };

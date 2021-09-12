@@ -8,19 +8,13 @@
 const actionName = "price-manager-action";
 
 export default class Server {
-    static init() {
-    }
-
     private readonly config: Config;
 
     public constructor(config: Config) {
         this.config = config;
 
-        context.registerAction(
-            actionName,
-            () => ({}),
-            () => ({}),
-        );
+        for (let key in this.config)
+            (this.config)[<keyof Config>key].observeValue(value => this.broadcastValue(<keyof Config>key, value));
 
         context.subscribe("action.execute", event => {
             if (event.action !== actionName)
@@ -40,11 +34,7 @@ export default class Server {
                     return this.setValue(args, group);
                 case "getValue":
                     return this.getValue(args, group);
-                case "getConfig":
-                    return this.getConfig(args, group);
                 case "broadcastValue":
-                    return;
-                case "broadcastConfig":
                     return;
             }
         });
@@ -53,7 +43,7 @@ export default class Server {
     private setValue(args: PriceManagerSetValueActionArgs, group: PlayerGroup): void {
         if (!this.isAuthorized(group, "write"))
             return;
-        const property: Property<any> = this.config[args.key];
+        const property: Observable<any> = this.config[args.key];
         property.setValue(args.value);
         // TODO: broadcast change
     }
@@ -61,39 +51,20 @@ export default class Server {
     private getValue(args: PriceManagerGetValueActionArgs, group: PlayerGroup): void {
         if (!this.isAuthorized(group, "read"))
             return;
-        const property: Property<any> = this.config[args.key];
+        const property: Observable<any> = this.config[args.key];
         const value = property.getValue();
         this.broadcastValue(args.key, value);
     }
 
-    private getConfig(args: PriceManagerGetConfigActionArgs, group: PlayerGroup): void {
-        if (!this.isAuthorized(group, "read"))
-            return;
-        this.broadcastConfig();
-    }
-
     private broadcastValue(key: keyof Config, value: any): void {
+        const args: PriceManagerBroadcastValueActionArgs = {
+            type: "broadcastValue",
+            key: key,
+            value: value,
+        };
         context.executeAction(
             actionName,
-            <PriceManagerBroadcastValueActionArgs>{
-                type: "broadcastValue",
-                key: key,
-                value: value,
-            },
-            () => { },
-        );
-    }
-
-    private broadcastConfig(): void {
-        const result: any = {};
-        for (let property in this.config)
-            result[property] = (<any>this.config)[property].getValue();
-        context.executeAction(
-            actionName,
-            <PriceManagerBroadcastConfigActionArgs>{
-                type: "broadcastConfig",
-                config: result,
-            },
+            args,
             () => { },
         );
     }

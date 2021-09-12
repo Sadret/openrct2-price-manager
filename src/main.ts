@@ -13,6 +13,8 @@ import Configuration from "./Configuration";
 import PriceManager from "./PriceManager";
 import Server from "./Server";
 
+const actionName = "price-manager-action";
+
 registerPlugin({
     name: "price-manager",
     version: "1.0.0",
@@ -21,22 +23,22 @@ registerPlugin({
     licence: "GPL-3.0",
     minApiVersion: 30,
     main: () => {
-        const config = Configuration.getLocalConfig();
-        const priceManager = new PriceManager(config);
+        if (network.mode !== "none")
+            context.registerAction(
+                actionName,
+                () => ({}),
+                () => ({}),
+            );
 
-        if (typeof ui !== "undefined") {
-            const configWindow = new ConfigWindow(config, priceManager);
-            ui.registerMenuItem("Price Manager", () => configWindow.show());
-        }
+        const config = new Configuration(network.mode === "client");
 
-        context.subscribe("interval.day", () => {
-            if (config.automaticPriceManagementEnabled.getValue())
-                priceManager.updatePrices();
-        });
+        if (network.mode === "server")
+            new Server(config);
 
-        if (config.automaticPriceManagementEnabled.getValue())
-            priceManager.updatePrices();
+        if (network.mode !== "client")
+            new PriceManager(config);
 
-        new Server(config);
+        if (typeof ui !== "undefined")
+            ui.registerMenuItem("Price Manager", () => ConfigWindow.show(config, <any>undefined));
     },
 });

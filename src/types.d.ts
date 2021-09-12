@@ -9,78 +9,68 @@ type OverchargeUmbrellasPolicyOption = "always" | "when it rains" | "never";
 type ParkPricePolicyOption = "minimum" | "average" | "maximum";
 type ChargePolicyOption = "rides" | "park entry" | "both";
 
-interface Persistence {
-    get<T>(key: string, defaultValue: T): T;
-    set<T>(key: string, value: T): void;
-}
+type Observer<T> = (value: T) => void;
 
-interface Property<T> {
+interface Observable<T> {
     readonly name: string;
     readonly text: string;
     readonly tooltip: string;
     getValue(): T;
     setValue(value: T): void;
+    observeValue(observer: Observer<T>): void;
 }
 
 interface Config {
     // automatic price management
-    automaticPriceManagementEnabled: Property<boolean>;
+    readonly automaticPriceManagementEnabled: Observable<boolean>;
 
     // ride price management
-    ridePriceManagementEnabled: Property<boolean>;
-    freeTransportRidesEnabled: Property<boolean>;
-    goodValueEnabled: Property<boolean>;
-    lazyTaxEnabled: Property<boolean>;
-    lazyTaxFactor: Property<number>;
-    unboundPriceEnabled: Property<boolean>;
+    readonly ridePriceManagementEnabled: Observable<boolean>;
+    readonly freeTransportRidesEnabled: Observable<boolean>;
+    readonly goodValueEnabled: Observable<boolean>;
+    readonly lazyTaxEnabled: Observable<boolean>;
+    readonly lazyTaxFactor: Observable<number>;
+    readonly unboundPriceEnabled: Observable<boolean>;
 
     // shop price management
-    shopPriceManagementEnabled: Property<boolean>;
-    overchargeUmbrellasPolicy: Property<OverchargeUmbrellasPolicyOption>;
+    readonly shopPriceManagementEnabled: Observable<boolean>;
+    readonly overchargeUmbrellasPolicy: Observable<OverchargeUmbrellasPolicyOption>;
 
     // toilet price management
-    toiletPriceManagementEnabled: Property<boolean>;
-    toiletPrice: Property<number>;
+    readonly toiletPriceManagementEnabled: Observable<boolean>;
+    readonly toiletPrice: Observable<number>;
 
     // park price management
-    parkPriceManagementEnabled: Property<boolean>;
-    parkPricePolicy: Property<ParkPricePolicyOption>;
+    readonly parkPriceManagementEnabled: Observable<boolean>;
+    readonly parkPricePolicy: Observable<ParkPricePolicyOption>;
 
     // rct1 charge policy
-    rct1ChargePolicy: Property<ChargePolicyOption>;
+    readonly rct1ChargePolicy: Observable<ChargePolicyOption>;
+}
+
+interface Persistence {
+    get<T>(key: keyof Config, defaultValue: T): T;
+    set<T>(key: keyof Config, value: T): void;
 }
 
 interface PriceManagerSetValueActionArgs {
-    type: "setValue";
-    key: keyof Config;
-    value: any;
+    readonly type: "setValue";
+    readonly key: keyof Config;
+    readonly value: any;
 }
 
 interface PriceManagerGetValueActionArgs {
-    type: "getValue";
-    key: keyof Config;
-}
-
-interface PriceManagerGetConfigActionArgs {
-    type: "getConfig";
+    readonly type: "getValue";
+    readonly key: keyof Config;
 }
 
 interface PriceManagerBroadcastValueActionArgs {
-    type: "broadcastValue";
-    key: keyof Config;
-    value: any;
-}
-
-interface PriceManagerBroadcastConfigActionArgs {
-    type: "broadcastConfig";
-    config: {
-        [Property in keyof Config]: any;
-    };
+    readonly type: "broadcastValue";
+    readonly key: keyof Config;
+    readonly value: any;
 }
 
 type PriceManagerActionArgs =
     PriceManagerSetValueActionArgs |
     PriceManagerGetValueActionArgs |
-    PriceManagerGetConfigActionArgs |
-    PriceManagerBroadcastValueActionArgs |
-    PriceManagerBroadcastConfigActionArgs;
+    PriceManagerBroadcastValueActionArgs;

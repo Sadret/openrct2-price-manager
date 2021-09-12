@@ -10,9 +10,11 @@ import PriceManager from "./PriceManager";
 const classification = "price-manager";
 
 export default class ConfigWindow {
-    private readonly windowDesc: WindowDesc;
+    public static show(config: Config, priceManager: PriceManager) {
+        const window = ui.getWindow(classification);
+        if (window)
+            return window.bringToFront();
 
-    public constructor(config: Config, priceManager: PriceManager) {
         const width = 320;
         const margin = 5;
         const tab = 13; // checkbox width
@@ -29,8 +31,14 @@ export default class ConfigWindow {
             return cursor;
         }
 
+        function apply<T extends Widget>(name: string, action: (widget: T) => void): void {
+            const window = ui.getWindow(classification);
+            if (window)
+                action(window.findWidget<T>(name));
+        }
+
         function label(
-            property: Property<any>,
+            observable: Observable<any>,
             tabbed = false,
         ): LabelWidget {
             return {
@@ -39,69 +47,76 @@ export default class ConfigWindow {
                 y: advance(lineHeight + linePadding) + 1,
                 width: width - 2 * margin - (tabbed ? tab : 0),
                 height: 12,
-                text: property.text,
-                tooltip: property.tooltip,
+                text: observable.text,
+                tooltip: observable.tooltip,
             };
         }
         function checkbox(
-            property: Property<boolean>,
+            observable: Observable<boolean>,
             tabbed = false,
         ): CheckboxWidget {
+            observable.observeValue(value =>
+                apply<CheckboxWidget>(observable.name, checkbox => checkbox.isChecked = value)
+            );
             return {
                 type: "checkbox",
-                name: property.name,
+                name: observable.name,
                 x: margin + (tabbed ? tab : 0),
                 y: advance(lineHeight + linePadding) + 1,
                 width: width - 2 * margin - (tabbed ? tab : 0),
                 height: 12,
-                text: property.text,
-                tooltip: property.tooltip,
-                isChecked: property.getValue(),
-                onChange: isChecked => property.setValue(isChecked),
+                text: observable.text,
+                tooltip: observable.tooltip,
+                isChecked: observable.getValue(),
+                onChange: isChecked => observable.setValue(isChecked),
             };
         }
         function dropdown<T extends string>(
-            property: Property<T>,
+            observable: Observable<T>,
             items: T[],
         ): DropdownWidget {
+            observable.observeValue(value =>
+                apply<DropdownWidget>(observable.name, dropdown => dropdown.selectedIndex = items.indexOf(value))
+            );
             return {
                 type: "dropdown",
-                name: property.name,
+                name: observable.name,
                 x: width - margin - inputWidth,
                 y: advance(0) - (lineHeight + linePadding),
                 width: inputWidth,
                 height: 14,
-                tooltip: property.tooltip,
+                tooltip: observable.tooltip,
                 items: items,
-                selectedIndex: items.indexOf(property.getValue()),
-                onChange: index => property.setValue(items[index]),
+                selectedIndex: items.indexOf(observable.getValue()),
+                onChange: index => observable.setValue(items[index]),
             };
         }
         function spinner(
-            property: Property<number>,
+            observable: Observable<number>,
             label: (value: any) => string = String,
             min = Number.NEGATIVE_INFINITY,
             max = Number.POSITIVE_INFINITY,
             step = 1,
         ): SpinnerWidget {
+            observable.observeValue(value =>
+                apply<SpinnerWidget>(observable.name, spinner => spinner.text = label(value))
+            );
             return {
                 type: "spinner",
-                name: property.name,
+                name: observable.name,
                 x: width - margin - inputWidth,
                 y: advance(0) - (lineHeight + linePadding),
                 width: inputWidth,
                 height: 14,
-                tooltip: property.tooltip,
-                text: label(property.getValue()),
+                tooltip: observable.tooltip,
+                text: label(observable.getValue()),
                 onDecrement: () => {
-                    const value = Math.max(min, property.getValue() - step);
-                    property.setValue(value);
-                    ui.getWindow(classification).findWidget<SpinnerWidget>(property.name).text = label(value);
+                    const value = Math.max(min, observable.getValue() - step);
+                    observable.setValue(value);
                 },
                 onIncrement: () => {
-                    const value = Math.min(max, property.getValue() + step);
-                    property.setValue(value);
-                    ui.getWindow(classification).findWidget<SpinnerWidget>(property.name).text = label(value);
+                    const value = Math.min(max, observable.getValue() + step);
+                    observable.setValue(value);
                 },
             };
         }
@@ -162,7 +177,7 @@ export default class ConfigWindow {
             button(
                 "Update all prices NOW",
                 "The plug-in updates the prices immediately, according to the previous settings.",
-                priceManager.updatePrices,
+                () => priceManager.updatePrices(),
             ),
             button(
                 "Make all rides FREE",
@@ -171,20 +186,13 @@ export default class ConfigWindow {
             ),
         );
 
-        this.windowDesc = {
+        const windowDesc = {
             classification: classification,
             width: width,
             height: y - linePadding + margin,
             title: "Price Manager",
             widgets: widgets,
         };
-    }
-
-    public show() {
-        const window = ui.getWindow(classification);
-        if (window)
-            window.bringToFront();
-        else
-            ui.openWindow(this.windowDesc);
+        ui.openWindow(windowDesc);
     }
 }

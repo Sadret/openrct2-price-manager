@@ -12,6 +12,14 @@ export default class PriceManager {
 
     public constructor(config: Config) {
         this.config = config;
+
+        context.subscribe("interval.day", () => {
+            if (config.automaticPriceManagementEnabled.getValue())
+                this.updatePrices();
+        });
+
+        if (config.automaticPriceManagementEnabled.getValue())
+            this.updatePrices();
     }
 
     public updatePrices(makeRidesFree: boolean = false): void {

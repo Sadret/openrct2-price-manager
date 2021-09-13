@@ -160,7 +160,8 @@ export default class UIWindow {
             checkbox(config.goodValueEnabled, true),
             checkbox(config.lazyTaxEnabled, true),
             spinner(config.lazyTaxFactor, value => value + "%", 0, 100, 5),
-            checkbox(config.unboundPriceEnabled, true),
+            checkbox(config.priceLimitEnabled, true),
+            spinner(config.priceLimit, value => value / 10 + ".00", 0, undefined, 10),
         );
         advance(space);
         widgets.push(

@@ -18,7 +18,8 @@ export default class Config implements IConfig {
     readonly goodValueEnabled: Observable<boolean>;
     readonly lazyTaxEnabled: Observable<boolean>;
     readonly lazyTaxFactor: Observable<number>;
-    readonly unboundPriceEnabled: Observable<boolean>;
+    readonly priceLimitEnabled: Observable<boolean>;
+    readonly priceLimit: Observable<number>;
 
     // shop price management
     readonly shopPriceManagementEnabled: Observable<boolean>;
@@ -85,12 +86,19 @@ export default class Config implements IConfig {
             "",
             "Reduces the ride prices by the given amount, to balance the vast advantage that the plug-in provides.",
         );
-        this.unboundPriceEnabled = new Property(
+        this.priceLimitEnabled = new Property(
             persistence,
-            "unboundPriceEnabled",
-            false,
-            "Allow unbound prices",
-            "Disables the ride price's upper bound (20.00€/$) that is due to OpenRCT2's user interface.",
+            "priceLimitEnabled",
+            true,
+            "Limit prices to",
+            "Limits the ride prices to the given amount. Default is 20.00€/$, which is what can be achieved through OpenRCT2's user interface.",
+        );
+        this.priceLimit = new Property(
+            persistence,
+            "priceLimit",
+            200,
+            "",
+            "Limits the ride prices to the given amount. Default is 20.00€/$, which is what can be achieved through OpenRCT2's user interface.",
         );
 
         // shop price management

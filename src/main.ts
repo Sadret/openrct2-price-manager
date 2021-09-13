@@ -8,12 +8,14 @@
 /// <reference path="../../openrct2.d.ts" />
 /// <reference path="types.d.ts" />
 
-import ConfigWindow from "./ConfigWindow";
-import Configuration from "./Configuration";
+import { ACTION } from "./Globals";
+import Client from "./Client";
+import Config from "./Config";
+import LocalPersistence from "./LocalPersistence";
 import PriceManager from "./PriceManager";
+import RemotePersistence from "./RemotePersistence";
 import Server from "./Server";
-
-const actionName = "price-manager-action";
+import UIWindow from "./UIWindow";
 
 registerPlugin({
     name: "price-manager",
@@ -25,20 +27,21 @@ registerPlugin({
     main: () => {
         if (network.mode !== "none")
             context.registerAction(
-                actionName,
+                ACTION,
                 () => ({}),
                 () => ({}),
             );
 
-        const config = new Configuration(network.mode === "client");
+        const persistence = network.mode === "client" ? new RemotePersistence() : new LocalPersistence();
+        const config = new Config(persistence);
+
+        const priceManager = network.mode === "client" ? new Client(config) : new PriceManager(config);
 
         if (network.mode === "server")
-            new Server(config);
-
-        if (network.mode !== "client")
-            new PriceManager(config);
-
-        if (typeof ui !== "undefined")
-            ui.registerMenuItem("Price Manager", () => ConfigWindow.show(config, <any>undefined));
+            new Server(config, priceManager);
+        if (typeof ui !== "undefined") {
+            const window = new UIWindow(config, priceManager);
+            ui.registerMenuItem("Price Manager", () => window.show());
+        }
     },
 });

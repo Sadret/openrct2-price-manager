@@ -12,7 +12,7 @@ type ChargePolicyOption = "rides" | "park entry" | "both";
 type Observer<T> = (value: T) => void;
 
 interface Observable<T> {
-    readonly name: string;
+    readonly name: keyof IConfig;
     readonly text: string;
     readonly tooltip: string;
     getValue(): T;
@@ -20,7 +20,7 @@ interface Observable<T> {
     observeValue(observer: Observer<T>): void;
 }
 
-interface Config {
+interface IConfig {
     // automatic price management
     readonly automaticPriceManagementEnabled: Observable<boolean>;
 
@@ -46,31 +46,44 @@ interface Config {
 
     // rct1 charge policy
     readonly rct1ChargePolicy: Observable<ChargePolicyOption>;
+
+    // server
+    readonly serverWriteAdminOnly: Observable<boolean>;
 }
 
 interface Persistence {
-    get<T>(key: keyof Config, defaultValue: T): T;
-    set<T>(key: keyof Config, value: T): void;
+    get<T>(key: keyof IConfig, defaultValue: T): T;
+    set<T>(key: keyof IConfig, value: T): void;
 }
 
-interface PriceManagerSetValueActionArgs {
+interface SetValueActionArgs {
     readonly type: "setValue";
-    readonly key: keyof Config;
+    readonly key: keyof IConfig;
     readonly value: any;
 }
 
-interface PriceManagerGetValueActionArgs {
+interface GetValueActionArgs {
     readonly type: "getValue";
-    readonly key: keyof Config;
+    readonly key: keyof IConfig;
 }
 
-interface PriceManagerBroadcastValueActionArgs {
+interface BroadcastValueActionArgs {
     readonly type: "broadcastValue";
-    readonly key: keyof Config;
+    readonly key: keyof IConfig;
     readonly value: any;
+}
+
+interface UpdatePricesActionArgs {
+    readonly type: "updatePrices";
+    readonly makeRidesFree: boolean;
 }
 
 type PriceManagerActionArgs =
-    PriceManagerSetValueActionArgs |
-    PriceManagerGetValueActionArgs |
-    PriceManagerBroadcastValueActionArgs;
+    SetValueActionArgs |
+    GetValueActionArgs |
+    BroadcastValueActionArgs |
+    UpdatePricesActionArgs;
+
+interface IPriceManager {
+    updatePrices(makeRidesFree: boolean = false): void;
+}

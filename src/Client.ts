@@ -5,25 +5,16 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
-const actionName = "price-manager-action";
+import { ACTION } from "./Globals";
 
-export default class Client implements Persistence {
-    private readonly config: Config;
+export default class Client implements IPriceManager {
+    private readonly config: IConfig;
 
-    public get<T>(key: keyof Config, defaultValue: T): T {
-        this.getValue(key);
-        return defaultValue;
-    }
-
-    public set<T>(key: keyof Config, value: T): void {
-        this.setValue(key, value);
-    }
-
-    public constructor(config: Config) {
+    public constructor(config: IConfig) {
         this.config = config;
 
         context.subscribe("action.execute", event => {
-            if (event.action !== actionName)
+            if (event.action !== ACTION)
                 return;
 
             const args = <PriceManagerActionArgs>event.args;
@@ -34,36 +25,25 @@ export default class Client implements Persistence {
                     return;
                 case "broadcastValue":
                     return this.broadcastValue(args);
+                case "updatePrices":
+                    return;
             }
         });
     }
 
-    private setValue(key: keyof Config, value: any): void {
-        const args: PriceManagerSetValueActionArgs = {
-            type: "setValue",
-            key: key,
-            value: value,
-        };
-        context.executeAction(
-            actionName,
-            args,
-            () => { },
-        );
-    }
-
-    private getValue(key: keyof Config): void {
-        const args: PriceManagerGetValueActionArgs = {
-            type: "getValue",
-            key: key,
-        };
-        context.executeAction(
-            actionName,
-            args,
-            () => { },
-        );
-    }
-
-    private broadcastValue(args: PriceManagerBroadcastValueActionArgs): void {
+    private broadcastValue(args: BroadcastValueActionArgs): void {
         (<Observable<any>>this.config[args.key]).setValue(args.value);
+    }
+
+    public updatePrices(makeRidesFree: boolean = false): void {
+        const args: UpdatePricesActionArgs = {
+            type: "updatePrices",
+            makeRidesFree: makeRidesFree,
+        }
+        context.executeAction(
+            ACTION,
+            args,
+            () => { },
+        );
     }
 }

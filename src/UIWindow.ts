@@ -5,15 +5,16 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
-import PriceManager from "./PriceManager";
+import Server from "./Server";
 
-const classification = "price-manager";
+export default class UIWindow {
+    private static readonly classification = "price-manager";
 
-export default class ConfigWindow {
-    public static show(config: Config, priceManager: PriceManager) {
-        const window = ui.getWindow(classification);
-        if (window)
-            return window.bringToFront();
+    private readonly windowDesc: WindowDesc;
+    private readonly config: IConfig;
+
+    public constructor(config: IConfig, priceManager: IPriceManager) {
+        this.config = config;
 
         const width = 320;
         const margin = 5;
@@ -22,7 +23,7 @@ export default class ConfigWindow {
         const linePadding = 2;
         const inputWidth = 96;
         const buttonHeight = 2 * lineHeight + linePadding;
-        const space = 8;
+        const space = 16;
 
         let y = 14 + margin; // header height + margin
         function advance(dy: number) {
@@ -32,7 +33,7 @@ export default class ConfigWindow {
         }
 
         function apply<T extends Widget>(name: string, action: (widget: T) => void): void {
-            const window = ui.getWindow(classification);
+            const window = ui.getWindow(UIWindow.classification);
             if (window)
                 action(window.findWidget<T>(name));
         }
@@ -43,6 +44,7 @@ export default class ConfigWindow {
         ): LabelWidget {
             return {
                 type: "label",
+                name: observable.name + "_label",
                 x: margin + (tabbed ? tab : 0),
                 y: advance(lineHeight + linePadding) + 1,
                 width: width - 2 * margin - (tabbed ? tab : 0),
@@ -55,10 +57,7 @@ export default class ConfigWindow {
             observable: Observable<boolean>,
             tabbed = false,
         ): CheckboxWidget {
-            observable.observeValue(value =>
-                apply<CheckboxWidget>(observable.name, checkbox => checkbox.isChecked = value)
-            );
-            return {
+            const desc: CheckboxWidget = {
                 type: "checkbox",
                 name: observable.name,
                 x: margin + (tabbed ? tab : 0),
@@ -70,15 +69,17 @@ export default class ConfigWindow {
                 isChecked: observable.getValue(),
                 onChange: isChecked => observable.setValue(isChecked),
             };
+            observable.observeValue(value => {
+                desc.isChecked = value;
+                apply<CheckboxWidget>(observable.name, checkbox => checkbox.isChecked = value);
+            });
+            return desc;
         }
         function dropdown<T extends string>(
             observable: Observable<T>,
             items: T[],
         ): DropdownWidget {
-            observable.observeValue(value =>
-                apply<DropdownWidget>(observable.name, dropdown => dropdown.selectedIndex = items.indexOf(value))
-            );
-            return {
+            const desc: DropdownWidget = {
                 type: "dropdown",
                 name: observable.name,
                 x: width - margin - inputWidth,
@@ -90,6 +91,12 @@ export default class ConfigWindow {
                 selectedIndex: items.indexOf(observable.getValue()),
                 onChange: index => observable.setValue(items[index]),
             };
+            observable.observeValue(value => {
+                const idx = items.indexOf(value);
+                desc.selectedIndex = idx;
+                apply<DropdownWidget>(observable.name, dropdown => dropdown.selectedIndex = idx);
+            });
+            return desc;
         }
         function spinner(
             observable: Observable<number>,
@@ -98,10 +105,7 @@ export default class ConfigWindow {
             max = Number.POSITIVE_INFINITY,
             step = 1,
         ): SpinnerWidget {
-            observable.observeValue(value =>
-                apply<SpinnerWidget>(observable.name, spinner => spinner.text = label(value))
-            );
-            return {
+            const desc: SpinnerWidget = {
                 type: "spinner",
                 name: observable.name,
                 x: width - margin - inputWidth,
@@ -119,13 +123,21 @@ export default class ConfigWindow {
                     observable.setValue(value);
                 },
             };
+            observable.observeValue(value => {
+                const text = label(value);
+                desc.text = text;
+                apply<SpinnerWidget>(observable.name, spinner => spinner.text = text);
+            });
+            return desc;
         }
         function button(
+            name: string,
             text: string,
             tooltip: string,
             onClick: () => void,
         ): ButtonWidget {
             return {
+                name: name,
                 type: "button",
                 x: margin,
                 y: advance(buttonHeight + linePadding),
@@ -174,25 +186,65 @@ export default class ConfigWindow {
         );
         advance(space);
         widgets.push(
+            checkbox(config.serverWriteAdminOnly),
+        );
+        advance(space);
+        widgets.push(
             button(
+                "updatePrices",
                 "Update all prices NOW",
                 "The plug-in updates the prices immediately, according to the previous settings.",
                 () => priceManager.updatePrices(),
             ),
             button(
+                "makeRidesFree",
                 "Make all rides FREE",
                 "Charges nothing for all rides. Make sure to have ride price management disabled, or else the prices will reset the next day.",
                 () => priceManager.updatePrices(true),
             ),
         );
 
-        const windowDesc = {
-            classification: classification,
+        this.windowDesc = {
+            classification: UIWindow.classification,
             width: width,
             height: y - linePadding + margin,
             title: "Price Manager",
             widgets: widgets,
         };
-        ui.openWindow(windowDesc);
+
+        if (network.mode !== "none") {
+            config.serverWriteAdminOnly.observeValue(() => this.updateAuthorisation());
+            context.subscribe("action.execute", event => {
+                if (event.action === "playersetgroup")
+                    this.updateAuthorisation();
+            });
+            this.updateAuthorisation();
+        }
+    }
+
+    private updateAuthorisation(): void {
+        const disabled = !Server.isWriteAuthorized(network.currentPlayer, this.config);
+        const admin = Server.isAdmin(network.currentPlayer);
+        const window = ui.getWindow(UIWindow.classification);
+
+        this.windowDesc.widgets ?.forEach(widget => {
+            if (widget.name === "serverWriteAdminOnly") {
+                widget.isDisabled = !admin;
+                if (window && widget.name)
+                    window.findWidget(widget.name).isDisabled = !admin;
+            } else {
+                widget.isDisabled = disabled;
+                if (window && widget.name)
+                    window.findWidget(widget.name).isDisabled = disabled;
+            }
+        });
+    }
+
+    public show(): void {
+        const window = ui.getWindow(UIWindow.classification);
+        if (window)
+            window.bringToFront();
+        else
+            ui.openWindow(this.windowDesc);
     }
 }

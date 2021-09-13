@@ -7,10 +7,10 @@
 
 import ShopItem from "./ShopItem";
 
-export default class PriceManager {
-    private readonly config: Config;
+export default class PriceManager implements IPriceManager {
+    private readonly config: IConfig;
 
-    public constructor(config: Config) {
+    public constructor(config: IConfig) {
         this.config = config;
 
         context.subscribe("interval.day", () => {

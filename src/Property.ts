@@ -7,7 +7,7 @@
 
 export default class Property<T> implements Observable<T>{
     readonly persistence: Persistence;
-    readonly name: keyof Config;
+    readonly name: keyof IConfig;
     private value: T;
     readonly text: string;
     readonly tooltip: string;
@@ -16,7 +16,7 @@ export default class Property<T> implements Observable<T>{
 
     constructor(
         persistence: Persistence,
-        name: keyof Config,
+        name: keyof IConfig,
         defaultValue: T,
         text: string,
         tooltip: string,

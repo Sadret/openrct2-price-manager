@@ -5,43 +5,43 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
-import Client from "./Client";
 import Property from "./Property";
-import Storage from "./Storage";
 
-export default class Configuration implements Config {
+export default class Config implements IConfig {
 
     // automatic price management
-    automaticPriceManagementEnabled: Observable<boolean>;
+    readonly automaticPriceManagementEnabled: Observable<boolean>;
 
     // ride price management
-    ridePriceManagementEnabled: Observable<boolean>;
-    freeTransportRidesEnabled: Observable<boolean>;
-    goodValueEnabled: Observable<boolean>;
-    lazyTaxEnabled: Observable<boolean>;
-    lazyTaxFactor: Observable<number>;
-    unboundPriceEnabled: Observable<boolean>;
+    readonly ridePriceManagementEnabled: Observable<boolean>;
+    readonly freeTransportRidesEnabled: Observable<boolean>;
+    readonly goodValueEnabled: Observable<boolean>;
+    readonly lazyTaxEnabled: Observable<boolean>;
+    readonly lazyTaxFactor: Observable<number>;
+    readonly unboundPriceEnabled: Observable<boolean>;
 
     // shop price management
-    shopPriceManagementEnabled: Observable<boolean>;
-    overchargeUmbrellasPolicy: Observable<OverchargeUmbrellasPolicyOption>;
+    readonly shopPriceManagementEnabled: Observable<boolean>;
+    readonly overchargeUmbrellasPolicy: Observable<OverchargeUmbrellasPolicyOption>;
 
     // toilet price management
-    toiletPriceManagementEnabled: Observable<boolean>;
-    toiletPrice: Observable<number>;
+    readonly toiletPriceManagementEnabled: Observable<boolean>;
+    readonly toiletPrice: Observable<number>;
 
     // park price management
-    parkPriceManagementEnabled: Observable<boolean>;
-    parkPricePolicy: Observable<ParkPricePolicyOption>;
+    readonly parkPriceManagementEnabled: Observable<boolean>;
+    readonly parkPricePolicy: Observable<ParkPricePolicyOption>;
 
     // rct1 charge policy
-    rct1ChargePolicy: Observable<ChargePolicyOption>;
+    readonly rct1ChargePolicy: Observable<ChargePolicyOption>;
 
-    constructor(remote: boolean) {
-        const persistence = remote ? new Client(this) : new Storage();
+    // server
+    readonly serverWriteAdminOnly: Observable<boolean>;
+
+    constructor(persistence: Persistence) {
 
         // automatic price management
-        this.automaticPriceManagementEnabled = new Property<boolean>(
+        this.automaticPriceManagementEnabled = new Property(
             persistence,
             "automaticPriceManagementEnabled",
             true,
@@ -149,5 +149,15 @@ export default class Configuration implements Config {
             "RCT1: Charge for",
             "In RCT1-scenarios, the guests will be charged for rides, park entry, or both.",
         );
+
+        // server write admin only
+        this.serverWriteAdminOnly = new Property(
+            persistence,
+            "serverWriteAdminOnly",
+            true,
+            "Multiplayer: Player needs admin rights",
+            "On a multiplayer server, only players with admin rights are allowed to change the configuration.",
+        );
     }
+
 }

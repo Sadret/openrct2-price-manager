@@ -61,14 +61,14 @@ export default class PriceManager implements IPriceManager {
         if (!this.config.parkPriceManagementEnabled.getValue())
             return;
 
+        // Scenario does not allow charging for park entry.
+        if (park.getFlag("freeParkEntry"))
+            return;
+
         this.setParkPrice(this.calculateParkPrice());
     }
 
     private calculateParkPrice(): number {
-        // Scenario does not allow charging for park entry.
-        if (park.getFlag("freeParkEntry"))
-            return 0;
-
         // RCT1 allows charging for both the park entry and rides.
         if (park.getFlag("unlockAllPrices"))
             if (this.config.rct1ChargePolicy.getValue() === "rides")

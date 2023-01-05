@@ -37,7 +37,7 @@ export default class PriceManager implements IPriceManager {
 
     private setParkPrice(value: number): void {
         context.executeAction(
-            "setparkentrancefee",
+            "parksetentrancefee",
             {
                 value: value,
             },

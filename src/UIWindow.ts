@@ -41,7 +41,7 @@ export default class UIWindow {
         function label(
             observable: Observable<any>,
             tabbed = false,
-        ): LabelWidget {
+        ): LabelDesc {
             return {
                 type: "label",
                 name: observable.name + "_label",
@@ -56,8 +56,8 @@ export default class UIWindow {
         function checkbox(
             observable: Observable<boolean>,
             tabbed = false,
-        ): CheckboxWidget {
-            const desc: CheckboxWidget = {
+        ): CheckboxDesc {
+            const desc: CheckboxDesc = {
                 type: "checkbox",
                 name: observable.name,
                 x: margin + (tabbed ? tab : 0),
@@ -78,8 +78,8 @@ export default class UIWindow {
         function dropdown<T extends string>(
             observable: Observable<T>,
             items: T[],
-        ): DropdownWidget {
-            const desc: DropdownWidget = {
+        ): DropdownDesc {
+            const desc: DropdownDesc = {
                 type: "dropdown",
                 name: observable.name,
                 x: width - margin - inputWidth,
@@ -104,8 +104,8 @@ export default class UIWindow {
             min = Number.NEGATIVE_INFINITY,
             max = Number.POSITIVE_INFINITY,
             step = 1,
-        ): SpinnerWidget {
-            const desc: SpinnerWidget = {
+        ): SpinnerDesc {
+            const desc: SpinnerDesc = {
                 type: "spinner",
                 name: observable.name,
                 x: width - margin - inputWidth,
@@ -135,7 +135,7 @@ export default class UIWindow {
             text: string,
             tooltip: string,
             onClick: () => void,
-        ): ButtonWidget {
+        ): ButtonDesc {
             return {
                 name: name,
                 type: "button",
@@ -149,7 +149,7 @@ export default class UIWindow {
             };
         }
 
-        const widgets: Widget[] = [];
+        const widgets: WidgetDesc[] = [];
         widgets.push(
             checkbox(config.automaticPriceManagementEnabled),
         );

@@ -2,7 +2,7 @@
 
 An OpenRCT2 plug-in that manages and automatically updates prices for park entry, rides and shops.
 
-## Acknowledgements
+#### Acknowledgements
 
 This plug-in is based on the famous [Ride Price Manager](https://github.com/mgovea/openrct2-ride-price-manager) of [mgovea](https://github.com/mgovea).
 
@@ -26,8 +26,9 @@ This plug-in is based on the famous [Ride Price Manager](https://github.com/mgov
 ## Installation
 
 1. Make sure that your OpenRCT2 version is up-to-date. You need at least version `0.3.4` or a recent development version.
-2. Go to the [releases](https://github.com/Sadret/openrct2-price-manager/releases) page and download the `openrct2-price-manager-?.?.?.js` file from the latest release, where `?.?.?` is the version number. Save it in the `plugin` subfolder of your OpenRCT2 user directory.\
-On Windows, this is usually at `C:Users\{User}\Documents\OpenRCT2\plugin`.
+2. Go to the [releases](https://github.com/Sadret/openrct2-price-manager/releases) page.\
+If your OpenRCT version is `0.4.4` or a recent development version, download the file [`openrct2-price-manager-1.1.2.js`](https://github.com/Sadret/openrct2-price-manager/releases/download/v1.1.2/openrct2-price-manager-1.1.2.js) from the latest release. Otherwise, download the file [`openrct2-price-manager-1.1.1.js`](https://github.com/Sadret/openrct2-price-manager/releases/download/v1.1.1/openrct2-price-manager-1.1.1.js) from the release "v1.1.1 Bugfix".\
+Save it in the `plugin` subfolder of your OpenRCT2 user directory. On Windows, this is usually at `C:Users\{User}\Documents\OpenRCT2\plugin`.
 3. Start OpenRCT2 and open a scenario.
 
 ## Usage
@@ -74,9 +75,9 @@ If you find any bugs or if you have any ideas for improvements, you can open an 
 
 If you like this plug-in, please leave a star on GitHub.
 
-If you really want to support me, you can [buy me a coffee](https://www.BuyMeACoffee.com/SadretGaming).
+If you really want to support me, you can [buy me a coffee](https://ko-fi.com/sadret).
 
 ## Copyright and License
 
-Copyright (c) 2021 Sadret\
+Copyright (c) 2021 - 2023 Sadret\
 The OpenRCT2 plug-in "Price Manager" is licensed under the GNU General Public License version 3.

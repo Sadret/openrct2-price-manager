@@ -140,8 +140,7 @@ export default class PriceManager implements IPriceManager {
             price = Math.floor(price * (1 - this.config.lazyTaxFactor.getValue() / 100));
 
         // Limit the price
-        if (this.config.priceLimitEnabled.getValue())
-            price = Math.min(price, this.config.priceLimit.getValue());
+        price = Math.min(price, this.config.priceLimit.getValue());
 
         return price;
     }

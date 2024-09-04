@@ -30,7 +30,6 @@ interface IConfig {
     readonly goodValueEnabled: Observable<boolean>;
     readonly lazyTaxEnabled: Observable<boolean>;
     readonly lazyTaxFactor: Observable<number>;
-    readonly priceLimitEnabled: Observable<boolean>;
     readonly priceLimit: Observable<number>;
 
     // shop price management

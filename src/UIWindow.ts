@@ -160,8 +160,8 @@ export default class UIWindow {
             checkbox(config.goodValueEnabled, true),
             checkbox(config.lazyTaxEnabled, true),
             spinner(config.lazyTaxFactor, value => value + "%", 0, 100, 5),
-            checkbox(config.priceLimitEnabled, true),
-            spinner(config.priceLimit, value => value / 10 + ".00", 0, undefined, 10),
+            label(config.priceLimit, true),
+            spinner(config.priceLimit, value => value / 10 + ".00", 0, 200, 10),
         );
         advance(space);
         widgets.push(
@@ -228,7 +228,7 @@ export default class UIWindow {
         const admin = Server.isAdmin(network.currentPlayer);
         const window = ui.getWindow(UIWindow.classification);
 
-        this.windowDesc.widgets ?.forEach(widget => {
+        this.windowDesc.widgets?.forEach(widget => {
             if (widget.name === "serverWriteAdminOnly") {
                 widget.isDisabled = !admin;
                 if (window && widget.name)

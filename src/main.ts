@@ -8,9 +8,9 @@
 /// <reference path="../../openrct2.d.ts" />
 /// <reference path="types.d.ts" />
 
-import { ACTION } from "./Globals";
 import Client from "./Client";
 import Config from "./Config";
+import { ACTION } from "./Globals";
 import LocalPersistence from "./LocalPersistence";
 import PriceManager from "./PriceManager";
 import RemotePersistence from "./RemotePersistence";
@@ -19,7 +19,7 @@ import UIWindow from "./UIWindow";
 
 registerPlugin({
     name: "price-manager",
-    version: "1.1.2",
+    version: "1.1.3",
     authors: ["Sadret"],
     type: "remote",
     licence: "GPL-3.0",

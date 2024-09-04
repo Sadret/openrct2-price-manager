@@ -161,7 +161,7 @@ export default class UIWindow {
             checkbox(config.lazyTaxEnabled, true),
             spinner(config.lazyTaxFactor, value => value + "%", 0, 100, 5),
             label(config.priceLimit, true),
-            spinner(config.priceLimit, value => value / 10 + ".00", 0, 200, 10),
+            spinner(config.priceLimit, value => context.formatString("{CURRENCY2DP}", value), 0, 200, 10),
         );
         advance(space);
         widgets.push(
@@ -172,7 +172,7 @@ export default class UIWindow {
         advance(space);
         widgets.push(
             checkbox(config.toiletPriceManagementEnabled),
-            spinner(config.toiletPrice, value => `${Math.floor(value / 10)}.${value % 10}0`, 0, undefined, 1),
+            spinner(config.toiletPrice, value => context.formatString("{CURRENCY2DP}", value), 0, undefined, 1),
         );
         advance(space);
         widgets.push(

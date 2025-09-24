@@ -101,15 +101,16 @@ export default class PriceManager implements IPriceManager {
     }
 
     private updateShopPrice(ride: Ride, isPrimaryPrice: boolean): void {
-        if (!this.config.shopPriceManagementEnabled.getValue())
-            return;
-
         // Toilets.
         if (ride.type === 36)
             if (this.config.toiletPriceManagementEnabled.getValue())
                 return this.setRidePrice(ride, this.config.toiletPrice.getValue(), isPrimaryPrice)
             else
                 return;
+
+        // Everything else but toilets.
+        if (!this.config.shopPriceManagementEnabled.getValue())
+            return;
 
         const price = ShopItem.getItemPrice(isPrimaryPrice ? ride.object.shopItem : ride.object.shopItemSecondary, this.config);
         this.setRidePrice(ride, price, isPrimaryPrice);

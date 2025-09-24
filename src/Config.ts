@@ -15,6 +15,7 @@ export default class Config implements IConfig {
     // ride price management
     readonly ridePriceManagementEnabled: Observable<boolean>;
     readonly freeTransportRidesEnabled: Observable<boolean>;
+    readonly keepFreeRidesFreeEnabled: Observable<boolean>;
     readonly goodValueEnabled: Observable<boolean>;
     readonly lazyTaxEnabled: Observable<boolean>;
     readonly lazyTaxFactor: Observable<number>;
@@ -63,6 +64,13 @@ export default class Config implements IConfig {
             false,
             "Make transport rides free",
             "Charges nothing for any transport ride. This includes the Miniature Railway, the (Suspended) Monorail and the (Chair)Lift.",
+        );
+        this.keepFreeRidesFreeEnabled = new Property(
+            persistence,
+            "keepFreeRidesFreeEnabled",
+            false,
+            "Keep free rides free",
+            "Does not change the price of any ride that is currently free to ride.",
         );
         this.goodValueEnabled = new Property(
             persistence,

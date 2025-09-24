@@ -27,6 +27,7 @@ interface IConfig {
     // ride price management
     readonly ridePriceManagementEnabled: Observable<boolean>;
     readonly freeTransportRidesEnabled: Observable<boolean>;
+    readonly keepFreeRidesFreeEnabled: Observable<boolean>;
     readonly goodValueEnabled: Observable<boolean>;
     readonly lazyTaxEnabled: Observable<boolean>;
     readonly lazyTaxFactor: Observable<number>;

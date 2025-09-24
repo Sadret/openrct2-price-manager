@@ -129,6 +129,10 @@ export default class PriceManager implements IPriceManager {
         if (this.config.freeTransportRidesEnabled.getValue() && [5, 6, 18, 43, 63].indexOf(ride.type) !== -1)
             return 0;
 
+        // Keep free rides free.
+        if (this.config.keepFreeRidesFreeEnabled.getValue() && ride.price[0] === 0)
+            return 0;
+
         // Guests only pay a quarter if they had to pay for park entry
         const value = ride.value >> (park.entranceFee > 0 && !park.getFlag("freeParkEntry") ? 2 : 0);
 

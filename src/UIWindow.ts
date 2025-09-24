@@ -157,6 +157,7 @@ export default class UIWindow {
         widgets.push(
             checkbox(config.ridePriceManagementEnabled),
             checkbox(config.freeTransportRidesEnabled, true),
+            checkbox(config.keepFreeRidesFreeEnabled, true),
             checkbox(config.goodValueEnabled, true),
             checkbox(config.lazyTaxEnabled, true),
             spinner(config.lazyTaxFactor, value => value + "%", 0, 100, 5),

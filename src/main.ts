@@ -5,7 +5,7 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
-/// <reference path="../../openrct2.d.ts" />
+/// <reference path="../../OpenRCT2/distribution/openrct2.d.ts" />
 /// <reference path="types.d.ts" />
 
 import Client from "./Client";

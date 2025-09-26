@@ -79,5 +79,5 @@ If you really want to support me, you can [buy me a coffee](https://ko-fi.com/sa
 
 ## Copyright and License
 
-Copyright (c) 2021 - 2023 Sadret\
+Copyright (c) 2021 - 2025 Sadret\
 The OpenRCT2 plug-in "Price Manager" is licensed under the GNU General Public License version 3.

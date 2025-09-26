@@ -6,14 +6,13 @@
  *****************************************************************************/
 
 /// <reference path="../../OpenRCT2/distribution/openrct2.d.ts" />
-/// <reference path="types.d.ts" />
 
-import Client from "./Client";
 import Config from "./Config";
 import { ACTION } from "./Globals";
 import LocalPersistence from "./LocalPersistence";
-import PriceManager from "./PriceManager";
+import PriceManager from "./LocalPriceManager";
 import RemotePersistence from "./RemotePersistence";
+import Client from "./RemotePriceManager";
 import Server from "./Server";
 import UIWindow from "./UIWindow";
 

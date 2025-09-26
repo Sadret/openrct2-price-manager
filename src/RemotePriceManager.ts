@@ -5,12 +5,15 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
+import type Config from "./Config";
 import { ACTION } from "./Globals";
+import type Property from "./Property";
+import type { BroadcastValueActionArgs, PriceManager, PriceManagerActionArgs, UpdatePricesActionArgs } from "./types";
 
-export default class Client implements IPriceManager {
-    private readonly config: IConfig;
+export default class RemotePriceManager implements PriceManager {
+    private readonly config: Config;
 
-    public constructor(config: IConfig) {
+    public constructor(config: Config) {
         this.config = config;
 
         context.subscribe("action.execute", event => {
@@ -32,7 +35,7 @@ export default class Client implements IPriceManager {
     }
 
     private broadcastValue(args: BroadcastValueActionArgs): void {
-        (<Observable<any>>this.config[args.key]).setValue(args.value);
+        (<Property<unknown>>this.config[args.key as keyof Config])?.setValue(args.value);
     }
 
     public updatePrices(makeRidesFree: boolean = false): void {

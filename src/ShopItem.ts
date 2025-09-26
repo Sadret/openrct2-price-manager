@@ -5,6 +5,8 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
+import type Config from "./Config";
+
 export default class ShopItem {
     // base value, hot value, cold value
     static readonly items = [
@@ -64,7 +66,7 @@ export default class ShopItem {
         [0, 0, 0,],    // EmptyBowlBlue
     ];
 
-    public static getItemPrice(item: number, config: IConfig) {
+    public static getItemPrice(item: number, config: Config) {
         // umbrellas
         if (item === 4) {
             switch (config.overchargeUmbrellasPolicy.getValue()) {

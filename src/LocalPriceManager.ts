@@ -5,12 +5,14 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
+import type Config from "./Config";
 import ShopItem from "./ShopItem";
+import type { PriceManager } from "./types";
 
-export default class PriceManager implements IPriceManager {
-    private readonly config: IConfig;
+export default class LocalPriceManager implements PriceManager {
+    private readonly config: Config;
 
-    public constructor(config: IConfig) {
+    public constructor(config: Config) {
         this.config = config;
 
         context.subscribe("interval.day", () => {

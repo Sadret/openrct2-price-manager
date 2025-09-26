@@ -5,18 +5,21 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
+import type Config from "./Config";
 import { ACTION } from "./Globals";
+import type Property from "./Property";
+import type { BroadcastValueActionArgs, GetValueActionArgs, PriceManager, PriceManagerActionArgs, SetValueActionArgs, UpdatePricesActionArgs } from "./types";
 
 export default class Server {
-    private readonly config: IConfig;
-    private readonly priceManager: IPriceManager;
+    private readonly config: Config;
+    private readonly priceManager: PriceManager;
 
-    public constructor(config: IConfig, priceManager: IPriceManager) {
+    public constructor(config: Config, priceManager: PriceManager) {
         this.config = config;
         this.priceManager = priceManager;
 
         for (let key in this.config)
-            (this.config)[<keyof IConfig>key].observeValue(value => this.broadcastValue(<keyof IConfig>key, value));
+            (this.config)[<keyof Config>key].observeValue(value => this.broadcastValue(<keyof Config>key, value));
 
         context.subscribe("action.execute", event => {
             if (event.action !== ACTION)
@@ -43,19 +46,25 @@ export default class Server {
     private setValue(args: SetValueActionArgs, player: Player): void {
         if (!Server.isWriteAuthorized(player, this.config))
             return;
-        if (args.key === "serverWriteAdminOnly" && !Server.isAdmin(player))
+        const key = args.key as keyof Config;
+        if (!(key in this.config))
             return;
-        const property: Observable<any> = this.config[args.key];
+        if (key === "serverWriteAdminOnly" && !Server.isAdmin(player))
+            return;
+        const property: Property<any> = this.config[key];
         property.setValue(args.value);
     }
 
     private getValue(args: GetValueActionArgs): void {
-        const property: Observable<any> = this.config[args.key];
+        const key = args.key as keyof Config;
+        if (!(key in this.config))
+            return;
+        const property = this.config[key];
         const value = property.getValue();
-        this.broadcastValue(args.key, value);
+        this.broadcastValue(key, value);
     }
 
-    private broadcastValue(key: keyof IConfig, value: any): void {
+    private broadcastValue(key: keyof Config, value: any): void {
         const args: BroadcastValueActionArgs = {
             type: "broadcastValue",
             key: key,
@@ -78,7 +87,7 @@ export default class Server {
         return find(network.players, player => player.id === id);
     }
 
-    public static isWriteAuthorized(player: Player, config: IConfig) {
+    public static isWriteAuthorized(player: Player, config: Config) {
         return Server.isAdmin(player) || !config.serverWriteAdminOnly.getValue();
     }
 

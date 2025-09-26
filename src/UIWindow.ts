@@ -5,15 +5,18 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
+import type Config from "./Config";
+import type Property from "./Property";
 import Server from "./Server";
+import type { PriceManager } from "./types";
 
 export default class UIWindow {
     private static readonly classification = "price-manager";
 
     private readonly windowDesc: WindowDesc;
-    private readonly config: IConfig;
+    private readonly config: Config;
 
-    public constructor(config: IConfig, priceManager: IPriceManager) {
+    public constructor(config: Config, priceManager: PriceManager) {
         this.config = config;
 
         const width = 320;
@@ -39,67 +42,67 @@ export default class UIWindow {
         }
 
         function label(
-            observable: Observable<any>,
+            Property: Property<any>,
             tabbed = false,
         ): LabelDesc {
             return {
                 type: "label",
-                name: observable.name + "_label",
+                name: Property.name + "_label",
                 x: margin + (tabbed ? tab : 0),
                 y: advance(lineHeight + linePadding) + 1,
                 width: width - 2 * margin - (tabbed ? tab : 0),
                 height: 12,
-                text: observable.text,
-                tooltip: observable.tooltip,
+                text: Property.text,
+                tooltip: Property.tooltip,
             };
         }
         function checkbox(
-            observable: Observable<boolean>,
+            Property: Property<boolean>,
             tabbed = false,
         ): CheckboxDesc {
             const desc: CheckboxDesc = {
                 type: "checkbox",
-                name: observable.name,
+                name: Property.name,
                 x: margin + (tabbed ? tab : 0),
                 y: advance(lineHeight + linePadding) + 1,
                 width: width - 2 * margin - (tabbed ? tab : 0),
                 height: 12,
-                text: observable.text,
-                tooltip: observable.tooltip,
-                isChecked: observable.getValue(),
-                onChange: isChecked => observable.setValue(isChecked),
+                text: Property.text,
+                tooltip: Property.tooltip,
+                isChecked: Property.getValue(),
+                onChange: isChecked => Property.setValue(isChecked),
             };
-            observable.observeValue(value => {
+            Property.observeValue(value => {
                 desc.isChecked = value;
-                apply<CheckboxWidget>(observable.name, checkbox => checkbox.isChecked = value);
+                apply<CheckboxWidget>(Property.name, checkbox => checkbox.isChecked = value);
             });
             return desc;
         }
         function dropdown<T extends string>(
-            observable: Observable<T>,
+            Property: Property<T>,
             items: T[],
         ): DropdownDesc {
             const desc: DropdownDesc = {
                 type: "dropdown",
-                name: observable.name,
+                name: Property.name,
                 x: width - margin - inputWidth,
                 y: advance(0) - (lineHeight + linePadding),
                 width: inputWidth,
                 height: 14,
-                tooltip: observable.tooltip,
+                tooltip: Property.tooltip,
                 items: items,
-                selectedIndex: items.indexOf(observable.getValue()),
-                onChange: index => observable.setValue(items[index]),
+                selectedIndex: items.indexOf(Property.getValue()),
+                onChange: index => Property.setValue(items[index]),
             };
-            observable.observeValue(value => {
+            Property.observeValue(value => {
                 const idx = items.indexOf(value);
                 desc.selectedIndex = idx;
-                apply<DropdownWidget>(observable.name, dropdown => dropdown.selectedIndex = idx);
+                apply<DropdownWidget>(Property.name, dropdown => dropdown.selectedIndex = idx);
             });
             return desc;
         }
         function spinner(
-            observable: Observable<number>,
+            Property: Property<number>,
             label: (value: any) => string = String,
             min = Number.NEGATIVE_INFINITY,
             max = Number.POSITIVE_INFINITY,
@@ -107,26 +110,26 @@ export default class UIWindow {
         ): SpinnerDesc {
             const desc: SpinnerDesc = {
                 type: "spinner",
-                name: observable.name,
+                name: Property.name,
                 x: width - margin - inputWidth,
                 y: advance(0) - (lineHeight + linePadding),
                 width: inputWidth,
                 height: 14,
-                tooltip: observable.tooltip,
-                text: label(observable.getValue()),
+                tooltip: Property.tooltip,
+                text: label(Property.getValue()),
                 onDecrement: () => {
-                    const value = Math.max(min, observable.getValue() - step);
-                    observable.setValue(value);
+                    const value = Math.max(min, Property.getValue() - step);
+                    Property.setValue(value);
                 },
                 onIncrement: () => {
-                    const value = Math.min(max, observable.getValue() + step);
-                    observable.setValue(value);
+                    const value = Math.min(max, Property.getValue() + step);
+                    Property.setValue(value);
                 },
             };
-            observable.observeValue(value => {
+            Property.observeValue(value => {
                 const text = label(value);
                 desc.text = text;
-                apply<SpinnerWidget>(observable.name, spinner => spinner.text = text);
+                apply<SpinnerWidget>(Property.name, spinner => spinner.text = text);
             });
             return desc;
         }

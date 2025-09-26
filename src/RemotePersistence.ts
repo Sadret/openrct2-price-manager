@@ -5,10 +5,12 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
+import type Config from "./Config";
 import { ACTION } from "./Globals";
+import type { GetValueActionArgs, Persistence, SetValueActionArgs } from "./types";
 
 export default class RemotePersistence implements Persistence {
-    public get<T>(key: keyof IConfig, defaultValue: T): T {
+    public get<T>(key: keyof Config, defaultValue: T): T {
         const args: GetValueActionArgs = {
             type: "getValue",
             key: key,
@@ -21,7 +23,7 @@ export default class RemotePersistence implements Persistence {
         return defaultValue;
     }
 
-    public set<T>(key: keyof IConfig, value: T): void {
+    public set<T>(key: keyof Config, value: T): void {
         const args: SetValueActionArgs = {
             type: "setValue",
             key: key,

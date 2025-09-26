@@ -5,9 +5,13 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
-export default class Property<T> implements Observable<T>{
+import type { Persistence } from "./types";
+
+export type Observer<T> = (value: T) => void;
+
+export default class Property<T> {
     readonly persistence: Persistence;
-    readonly name: keyof IConfig;
+    readonly name: string;
     private value: T;
     readonly text: string;
     readonly tooltip: string;
@@ -16,7 +20,7 @@ export default class Property<T> implements Observable<T>{
 
     constructor(
         persistence: Persistence,
-        name: keyof IConfig,
+        name: string,
         defaultValue: T,
         text: string,
         tooltip: string,

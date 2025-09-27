@@ -6,7 +6,7 @@
  *****************************************************************************/
 
 import type Config from "./Config";
-import { ACTION } from "./Globals";
+import { ACTION_NAME } from "./Globals";
 import type Property from "./Property";
 import type { BroadcastValueActionArgs, PriceManager, PriceManagerActionArgs, UpdatePricesActionArgs } from "./types";
 
@@ -17,7 +17,7 @@ export default class RemotePriceManager implements PriceManager {
         this.config = config;
 
         context.subscribe("action.execute", event => {
-            if (event.action !== ACTION)
+            if (event.action !== ACTION_NAME)
                 return;
 
             const args = <PriceManagerActionArgs>event.args;
@@ -44,7 +44,7 @@ export default class RemotePriceManager implements PriceManager {
             makeRidesFree: makeRidesFree,
         }
         context.executeAction(
-            ACTION,
+            ACTION_NAME,
             args,
             () => { },
         );

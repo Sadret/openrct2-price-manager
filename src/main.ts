@@ -8,7 +8,7 @@
 /// <reference path="../../OpenRCT2/distribution/openrct2.d.ts" />
 
 import Config from "./Config";
-import { ACTION } from "./Globals";
+import { ACTION_NAME } from "./Globals";
 import LocalPersistence from "./LocalPersistence";
 import PriceManager from "./LocalPriceManager";
 import RemotePersistence from "./RemotePersistence";
@@ -27,7 +27,7 @@ registerPlugin({
     main: () => {
         if (network.mode !== "none")
             context.registerAction(
-                ACTION,
+                ACTION_NAME,
                 () => ({}),
                 () => ({}),
             );

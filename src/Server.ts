@@ -6,8 +6,8 @@
  *****************************************************************************/
 
 import type Config from "./Config";
-import { ACTION } from "./Globals";
-import type Property from "./Property";
+import { ACTION_NAME } from "./Globals";
+import Property from "./Property";
 import type { BroadcastValueActionArgs, GetValueActionArgs, PriceManager, PriceManagerActionArgs, SetValueActionArgs, UpdatePricesActionArgs } from "./types";
 
 export default class Server {
@@ -18,11 +18,16 @@ export default class Server {
         this.config = config;
         this.priceManager = priceManager;
 
-        for (let key in this.config)
-            (this.config)[<keyof Config>key].observeValue(value => this.broadcastValue(<keyof Config>key, value));
+        Object.keys(this.config).map(
+            key => this.config[key as keyof Config]
+        ).filter(
+            attr => attr instanceof Property
+        ).forEach(
+            property => property.observeValue(value => this.broadcastValue(property.name, value))
+        );
 
         context.subscribe("action.execute", event => {
-            if (event.action !== ACTION)
+            if (event.action !== ACTION_NAME)
                 return;
 
             const player = Server.getPlayer(event.player);
@@ -51,8 +56,7 @@ export default class Server {
             return;
         if (key === "serverWriteAdminOnly" && !Server.isAdmin(player))
             return;
-        const property: Property<any> = this.config[key];
-        property.setValue(args.value);
+        (this.config[key] as Property<any>).setValue(args.value);
     }
 
     private getValue(args: GetValueActionArgs): void {
@@ -60,18 +64,17 @@ export default class Server {
         if (!(key in this.config))
             return;
         const property = this.config[key];
-        const value = property.getValue();
-        this.broadcastValue(key, value);
+        this.broadcastValue(key, (this.config[key] as Property<any>).getValue());
     }
 
-    private broadcastValue(key: keyof Config, value: any): void {
+    private broadcastValue(key: string, value: any): void {
         const args: BroadcastValueActionArgs = {
             type: "broadcastValue",
             key: key,
             value: value,
         };
         context.executeAction(
-            ACTION,
+            ACTION_NAME,
             args,
             () => { },
         );

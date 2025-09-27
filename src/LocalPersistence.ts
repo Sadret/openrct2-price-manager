@@ -6,15 +6,15 @@
  *****************************************************************************/
 
 import type Config from "./Config";
-import { PREFIX } from "./Globals";
+import { PLUGIN_NAME } from "./Globals";
 import type { Persistence } from "./types";
 
 export default class LocalPersistence implements Persistence {
     public get<T>(key: keyof Config, defaultValue: T): T {
-        return context.sharedStorage.get(PREFIX + key, defaultValue);
+        return context.getParkStorage(PLUGIN_NAME).get(key) || context.sharedStorage.get(`${PLUGIN_NAME}.${key}`, defaultValue);
     }
 
     public set<T>(key: keyof Config, value: T): void {
-        return context.sharedStorage.set(PREFIX + key, value);
+        return context.getParkStorage(PLUGIN_NAME).set(key, value);
     }
 }

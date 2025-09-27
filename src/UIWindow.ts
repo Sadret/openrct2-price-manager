@@ -208,6 +208,15 @@ export default class UIWindow {
                 () => priceManager.updatePrices(true),
             ),
         );
+        advance(space);
+        widgets.push(
+            button(
+                "saveAsDefault",
+                "Save current settings as default",
+                "Saves the current settings as the default ones, which will be used for new parks.",
+                () => config.saveAsDefault(),
+            ),
+        );
 
         this.windowDesc = {
             classification: UIWindow.classification,

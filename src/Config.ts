@@ -5,6 +5,7 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
+import { PLUGIN_NAME } from "./Globals";
 import Property from "./Property";
 import type { Persistence } from "./types";
 
@@ -176,4 +177,15 @@ export default class Config {
         );
     }
 
+    public saveAsDefault(): void {
+        Object.keys(this).map(
+            key => this[key as keyof this]
+        ).filter(
+            attr => attr instanceof Property
+        ).map(
+            prop => (console.log(`${PLUGIN_NAME}.${prop.name}`, prop.getValue()), prop)
+        ).forEach(
+            prop => context.sharedStorage.set(`${PLUGIN_NAME}.${prop.name}`, prop.getValue())
+        );
+    }
 }

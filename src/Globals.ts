@@ -5,10 +5,5 @@
  * under the GNU General Public License version 3.
  *****************************************************************************/
 
-const ACTION = "price-manager-action";
-const PREFIX = "price_manager.";
-
-export {
-    ACTION,
-    PREFIX
-};
+export const PLUGIN_NAME = "price_manager";
+export const ACTION_NAME = "price-manager-action";

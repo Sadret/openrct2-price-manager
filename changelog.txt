@@ -1,5 +1,6 @@
 1.1.4 (???)
 ------------------------------------------------------------------------
+- Feature: Save configuration per park
 - Feature: Add option to keep free rides free
 - Changed: Toilet price management is now independent of shop price management
 

@@ -6,7 +6,7 @@
  *****************************************************************************/
 
 import type Config from "./Config";
-import { ACTION } from "./Globals";
+import { ACTION_NAME } from "./Globals";
 import type { GetValueActionArgs, Persistence, SetValueActionArgs } from "./types";
 
 export default class RemotePersistence implements Persistence {
@@ -16,7 +16,7 @@ export default class RemotePersistence implements Persistence {
             key: key,
         };
         context.executeAction(
-            ACTION,
+            ACTION_NAME,
             args,
             () => { },
         );
@@ -30,7 +30,7 @@ export default class RemotePersistence implements Persistence {
             value: value,
         };
         context.executeAction(
-            ACTION,
+            ACTION_NAME,
             args,
             () => { },
         );

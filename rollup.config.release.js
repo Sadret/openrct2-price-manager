@@ -1,8 +1,3 @@
-import {
-	name,
-	version
-} from './package.json';
-
 import typescript from "@rollup/plugin-typescript";
 import {
 	terser
@@ -12,7 +7,7 @@ export default {
 	input: "./src/main.ts",
 	output: {
 		format: "iife",
-		file: `./build/${name}-${version}.js`,
+		file: "./build/openrct2-price-manager-1.1.3.js",
 	},
 	plugins: [
 		typescript(),

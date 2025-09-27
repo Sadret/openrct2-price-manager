@@ -7,7 +7,7 @@ export default {
 	input: "./src/main.ts",
 	output: {
 		format: "iife",
-		file: "./build/openrct2-price-manager-1.1.3.js",
+		file: "./build/openrct2-price-manager-1.1.4.js",
 	},
 	plugins: [
 		typescript(),

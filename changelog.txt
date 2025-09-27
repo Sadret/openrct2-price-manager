@@ -1,4 +1,4 @@
-1.1.4 (???)
+1.1.4 (2025-09-27)
 ------------------------------------------------------------------------
 - Feature: Save configuration per park
 - Feature: Add option to keep free rides free

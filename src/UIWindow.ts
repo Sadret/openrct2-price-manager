@@ -207,15 +207,24 @@ export default class UIWindow {
                 "Charges nothing for all rides. Make sure to have ride price management disabled, or else the prices will reset the next day.",
                 () => priceManager.updatePrices(true),
             ),
-        );
-        advance(space);
-        widgets.push(
             button(
                 "saveAsDefault",
                 "Save current settings as default",
                 "Saves the current settings as the default ones, which will be used for new parks.",
                 () => config.saveAsDefault(),
             ),
+            {
+                type: "label",
+                name: "copyright_label",
+                x: margin,
+                y: advance(lineHeight + linePadding) + 1,
+                width: width - 2 * margin,
+                height: 12,
+                isDisabled: true,
+                text: "Copyright (c) 2021-2025 Sadret",
+                tooltip: "Copyright (c) 2021-2025 Sadret - Licensed under the GNU General Public License version 3.",
+                textAlign: "centred",
+            }
         );
 
         this.windowDesc = {

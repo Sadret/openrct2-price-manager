@@ -35,6 +35,13 @@ export default class LocalPriceManager implements PriceManager {
         map.rides.forEach(
             (ride: Ride) => this.updatePrice(ride, makeRidesFree)
         );
+
+        // re-run park price management after ride value recalculation
+        // this happens together with guest softcap recalculation
+        const callback = context.subscribe("park.guest.softcap.calculate", () => {
+            callback.dispose();
+            this.updateParkPrice();
+        });
     }
 
     private setParkPrice(value: number): void {
@@ -59,24 +66,23 @@ export default class LocalPriceManager implements PriceManager {
         );
     }
 
+    private isParkFree(): boolean {
+        return false
+            // Scenario does not allow charging for park entry.
+            || park.getFlag("freeParkEntry")
+            // RCT1 allows charging for both the park entry and rides.
+            || park.getFlag("unlockAllPrices") && this.config.rct1ChargePolicy.getValue() === "rides";
+    }
+
     private updateParkPrice(): void {
         if (!this.config.parkPriceManagementEnabled.getValue())
             return;
 
-        // Scenario does not allow charging for park entry.
-        if (park.getFlag("freeParkEntry"))
-            return;
-
-        this.setParkPrice(this.calculateParkPrice());
-    }
-
-    private calculateParkPrice(): number {
-        // RCT1 allows charging for both the park entry and rides.
-        if (park.getFlag("unlockAllPrices"))
-            if (this.config.rct1ChargePolicy.getValue() === "rides")
-                return 0;
-
-        return Math.min(park.totalRideValueForMoney, this.getMaximumParkEntranceFee());
+        this.setParkPrice(
+            this.isParkFree()
+                ? 0
+                : Math.min(park.totalRideValueForMoney, this.getMaximumParkEntranceFee())
+        );
     }
 
     private updatePrice(ride: Ride, makeRidesFree: boolean): void {
@@ -124,9 +130,8 @@ export default class LocalPriceManager implements PriceManager {
             return 0;
 
         // RCT1 allows charging for both the park entry and rides.
-        if (park.getFlag("unlockAllPrices"))
-            if (this.config.rct1ChargePolicy.getValue() === "park entry")
-                return 0;
+        if (park.getFlag("unlockAllPrices") && this.config.rct1ChargePolicy.getValue() === "park entry")
+            return 0;
 
         // Make transport rides free.
         if (this.config.freeTransportRidesEnabled.getValue() && [5, 6, 18, 43, 63].indexOf(ride.type) !== -1)
@@ -137,7 +142,7 @@ export default class LocalPriceManager implements PriceManager {
             return 0;
 
         // Guests only pay a quarter if they had to pay for park entry
-        const value = ride.value >> (park.entranceFee > 0 && !park.getFlag("freeParkEntry") ? 2 : 0);
+        const value = ride.value >> (this.isParkFree() ? 0 : 2);
 
         // Guests will pay at most double the value
         // If it is less than half, they think it is good value

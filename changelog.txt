@@ -1,3 +1,8 @@
+1.1.5 (2025-10-26)
+------------------------------------------------------------------------
+- Fix: Park price is now correctly updated after RCT1 charge policy changes
+- Improved: Readme file is updated to new settings and new version
+
 1.1.4 (2025-09-27)
 ------------------------------------------------------------------------
 - Feature: Save configuration per park

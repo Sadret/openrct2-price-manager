@@ -104,7 +104,7 @@ export default class Config {
             "priceLimit",
             200,
             "Limit prices to",
-            "Limits the ride prices to the given amount. Default is 20.00€/$, which is what can be achieved through OpenRCT2's user interface.",
+            "Limits the ride prices to the given amount. Default is " + context.formatString("{CURRENCY2DP}", 200) + ", which is the maximum of what can be done in OpenRCT2's user interface.",
         );
         // limit ride prices to 20 GBP
         if (this.priceLimit.getValue() > 200)

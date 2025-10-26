@@ -7,13 +7,13 @@ export default {
 	input: "./src/main.ts",
 	output: {
 		format: "iife",
-		file: "./build/openrct2-price-manager-1.1.4.js",
+		file: "./build/openrct2-price-manager-1.1.5.js",
 	},
 	plugins: [
 		typescript(),
 		terser({
 			format: {
-				preamble: "// Copyright (c) 2025 Sadret",
+				preamble: "// Copyright (c) 2021-2025 Sadret",
 			},
 		}),
 	],

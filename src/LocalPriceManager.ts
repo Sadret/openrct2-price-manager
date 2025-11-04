@@ -78,6 +78,9 @@ export default class LocalPriceManager implements PriceManager {
         if (!this.config.parkPriceManagementEnabled.getValue())
             return;
 
+        if (park.getFlag("freeParkEntry"))
+            return;
+
         this.setParkPrice(
             this.isParkFree()
                 ? 0

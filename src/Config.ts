@@ -104,7 +104,7 @@ export default class Config {
             "priceLimit",
             200,
             "Limit prices to",
-            "Limits the ride prices to the given amount. Default is " + context.formatString("{CURRENCY2DP}", 200) + ", which is the maximum of what can be done in OpenRCT2's user interface.",
+            "Limits the ride prices to the given amount. Default is " + context.formatString("{CURRENCY2DP}", 200) + ", which is the maximum you can charge in OpenRCT2.",
         );
         // limit ride prices to 20 GBP
         if (this.priceLimit.getValue() > 200)
@@ -182,8 +182,6 @@ export default class Config {
             key => this[key as keyof this]
         ).filter(
             attr => attr instanceof Property
-        ).map(
-            prop => (console.log(`${PLUGIN_NAME}.${prop.name}`, prop.getValue()), prop)
         ).forEach(
             prop => context.sharedStorage.set(`${PLUGIN_NAME}.${prop.name}`, prop.getValue())
         );

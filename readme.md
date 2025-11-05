@@ -49,7 +49,7 @@ Each user will be able to open the settings window, but you can restrict the rig
   - **Keep free rides free**: "Does not change the price of any ride that is currently free to ride."
   - **Enable 'Good Value' pricing**: Charges only a quarter of the ride value, which makes the guests think that the ride has 'Good Value'.
   - **Enable lazy tax**: Reduces the ride prices by the given amount, to balance the vast advantage that the plug-in provides.
-  - **Limit prices**: Limits the ride prices to the given amount. Default is 20.00€/$, which is the maximum of what can be done in OpenRCT2's user interface.
+  - **Limit prices**: Limits the ride prices to the given amount. Default is 20.00€/$, which is the maximum you can charge in OpenRCT2.
 - **Enable shop price management**: The plug-in manages the prices for all shops and all on-ride photos, and enables the following setting:
   - **Overcharge for umbrellas**: Sets the price for umbrellas to 20.00€/$, which guests are always willing to pay when it rains.
 - **Enable toilet price management**: The plug-in sets the price for all toilets to the given amount.

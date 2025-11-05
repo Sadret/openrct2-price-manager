@@ -18,7 +18,7 @@ import UIWindow from "./UIWindow";
 
 registerPlugin({
     name: "price-manager",
-    version: "1.1.6",
+    version: "1.1.7",
     authors: ["Sadret"],
     type: "remote",
     licence: "GPL-3.0",

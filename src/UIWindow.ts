@@ -231,7 +231,7 @@ export default class UIWindow {
             classification: UIWindow.classification,
             width: width,
             height: y - linePadding + margin,
-            title: "Price Manager (v1.1.6)",
+            title: "Price Manager (v1.1.7)",
             widgets: widgets,
         };
 

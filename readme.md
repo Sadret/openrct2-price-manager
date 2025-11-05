@@ -26,7 +26,7 @@ This plug-in is based on the famous [Ride Price Manager](https://github.com/mgov
 ## Installation
 
 1. Make sure that your OpenRCT2 version is up-to-date. You need at least version `0.4.4` or a recent development version.
-2. Go to the [releases](#https://github.com/Sadret/openrct2-price-manager/releases) page and download the file [`openrct2-price-manager-1.1.6.js`](https://github.com/Sadret/openrct2-price-manager/releases/download/v1.1.6/openrct2-price-manager-1.1.6.js) from [release 1.1.6](https://github.com/Sadret/openrct2-price-manager/releases/tag/v1.1.6).
+2. Go to the [releases](#https://github.com/Sadret/openrct2-price-manager/releases) page and download the file [`openrct2-price-manager-1.1.7.js`](https://github.com/Sadret/openrct2-price-manager/releases/download/v1.1.7/openrct2-price-manager-1.1.7.js) from [release 1.1.7](https://github.com/Sadret/openrct2-price-manager/releases/tag/v1.1.7).
 3. Save it in the `plugin` subfolder of your OpenRCT2 user directory.\
 On Windows, this is usually at `C:Users\{User}\Documents\OpenRCT2\plugin`.\
 If you had a previous version of the Scenery Manager installed, make sure to delete its file from the `plugin` folder.

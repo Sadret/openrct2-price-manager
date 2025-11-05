@@ -67,18 +67,20 @@ export default class LocalPriceManager implements PriceManager {
     }
 
     private isParkFree(): boolean {
-        return false
-            // Scenario does not allow charging for park entry.
-            || park.getFlag("freeParkEntry")
+        if (park.getFlag("unlockAllPrices"))
             // RCT1 allows charging for both the park entry and rides.
-            || park.getFlag("unlockAllPrices") && this.config.rct1ChargePolicy.getValue() === "rides";
+            return this.config.rct1ChargePolicy.getValue() === "rides";
+        else
+            // Scenario does not allow charging for park entry.
+            return park.getFlag("freeParkEntry");
     }
 
     private updateParkPrice(): void {
         if (!this.config.parkPriceManagementEnabled.getValue())
             return;
 
-        if (park.getFlag("freeParkEntry"))
+        if (park.getFlag("freeParkEntry") && !park.getFlag("unlockAllPrices"))
+            // Scenario does not allow charging for park entry.
             return;
 
         this.setParkPrice(
